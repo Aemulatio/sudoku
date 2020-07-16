@@ -16,6 +16,11 @@ for (let tile of tiles) {
 
 }
 
+
+window.onload = function () {
+    gameStart();
+};
+
 /**
  * Задает всем ячейкам начальное состояние
  */
@@ -32,11 +37,11 @@ function reset() {
  * */
 
 function check() {
-    checkTile();
-
-    checkRow();
-    checkColumn();
+    if (checkTile() && checkRow() && checkColumn()) {
+        alert('Winner winner chicken sudoku');
+    }
 }
+
 /**
  * Проверяет строки игрового поля
  * */
@@ -72,11 +77,12 @@ function checkRow() {
                 }
             }
         }
-        if(!doesItFit(row_statistic)){
+        if (!doesItFit(row_statistic)) {
             alert('Что-то пошло не так →');
-            break;
+            return false;
         }
     }
+    return true;
 }
 
 
@@ -115,11 +121,12 @@ function checkColumn() {
                 }
             }
         }
-        if(!doesItFit(column_statistic)){
+        if (!doesItFit(column_statistic)) {
             alert('Что-то пошло не так ↓');
-            break;
+            return false;
         }
     }
+    return true;
 }
 
 
@@ -155,12 +162,14 @@ function checkTile() {
                 }
             }
         }
-        if(!doesItFit(bigTiles_statistic)){
+        if (!doesItFit(bigTiles_statistic)) {
             alert('Что-то пошло не так ■');
-            break;
+            return false;
         }
     }
+    return true;
 }
+
 /**
  * Проверяет содержится ли в element повторения
  *
@@ -168,10 +177,43 @@ function checkTile() {
  * */
 function doesItFit(element) {
     for (let i = 0; i < 9; i++) {
-        if (element[i] > 1) {
+        if (element[i] !== 1) {
             return false;
         }
     }
     return true;
+
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+}
+
+function gameStart() {
+    let amountPerBT = [];
+    for (let i = 0; i < 9; i++) {
+        amountPerBT[i] = getRandomInt(2, 5);
+    }
+    for (let i = 1; i < 10; i++) {
+        let BTs = document.querySelectorAll(`div[data-big-tale='${i}']`);
+        let rand = amountPerBT[i - 1];
+        for (let j = 0; j < rand; j++) {
+            let id = getRandomInt(0, 9);
+            if (!BTs[id].dataset.content) {
+                BTs[id].dataset.content = getRandomInt(1, 9);
+                BTs[id].textContent = BTs[id].dataset.content;
+            } else {
+                j--;
+            }
+        }
+        // console.log(BTs);
+    }
+
+
+    // for
+
+    console.log(amountPerBT);
 
 }
