@@ -1,6 +1,6 @@
 "use strict"
 
-let tiles = document.querySelectorAll('.tile');
+let tiles = document.querySelectorAll('.tile'); //получаем игровые клетки
 
 for (let tile of tiles) {
     // добавляем каждой ячейке ивент
@@ -13,7 +13,6 @@ for (let tile of tiles) {
 
         if (innerValue >= 9) tile.dataset.content = 0;
     }
-
 }
 
 
@@ -185,25 +184,38 @@ function doesItFit(element) {
 
 }
 
+/**
+ * Функция для получения случайного зачения в диапазоне от min до max
+ *
+ * @min - Number
+ * @max - Number
+ * */
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
 }
 
+/**
+ *  Запускается при полной загрузке страницы
+ *
+ *
+ * */
 function gameStart() {
-    let amountPerBT = [];
+    let amountPerBT = []; //количество на большую клетку
     for (let i = 0; i < 9; i++) {
-        amountPerBT[i] = getRandomInt(2, 5);
+        amountPerBT[i] = getRandomInt(2, 5); // получаем количество заданных значений для каждой большой клетки
     }
+
     for (let i = 1; i < 10; i++) {
-        let BTs = document.querySelectorAll(`div[data-big-tale='${i}']`);
-        let rand = amountPerBT[i - 1];
-        for (let j = 0; j < rand; j++) {
-            let id = getRandomInt(0, 9);
-            if (!BTs[id].dataset.content) {
+        let BTs = document.querySelectorAll(`div[data-big-tale='${i}']`); //получаем клетки из каждой большой клетки
+        let rand = amountPerBT[i - 1]; //записываем в переменную количество заданных ячеек
+        for (let j = 0; j < rand; j++) { // поехали их задавать
+            let id = getRandomInt(0, 9); // получаем номер ячейки (в пределах большой) в которую пишем
+            if (!BTs[id].dataset.content) { // если нет значения, то ок
                 BTs[id].dataset.content = getRandomInt(1, 9);
                 BTs[id].textContent = BTs[id].dataset.content;
+                BTs[id].dataset.unchangeable = '';
             } else {
                 j--;
             }
@@ -213,7 +225,5 @@ function gameStart() {
 
 
     // for
-
-    console.log(amountPerBT);
 
 }
