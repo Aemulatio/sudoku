@@ -22,6 +22,7 @@ $(document).ready(function () {
 
     /**
      * Задает всем ячейкам начальное состояние
+     *
      */
     function reset() {
         for (let tile of tiles) {
@@ -36,13 +37,14 @@ $(document).ready(function () {
      * */
 
     function check() {
-        if (checkTile() && checkRow() && checkColumn()) {
+        if (checkTile() && checkRow() && checkColumn() && !$('div.main__small-tile.tile').text().includes('')) {
             alert('Winner winner chicken sudoku');
         }
     }
 
     /**
      * Проверяет строки игрового поля
+     *
      * */
     function checkRow() {
         let rows = {};
@@ -83,7 +85,6 @@ $(document).ready(function () {
         }
         return true;
     }
-
 
     /**
      * Проверяет столбцы игрового поля
@@ -202,7 +203,6 @@ $(document).ready(function () {
     /**
      *  Запускается при полной загрузке страницы
      *
-     *
      * */
     function gameStart() {
         let amountPerBT = []; //количество на большую клетку
@@ -216,8 +216,10 @@ $(document).ready(function () {
             let vals = []; //
             for (let j = 0; j < rand; j++) { // поехали их задавать
                 let id = getRandomInt(0, 9); // получаем номер ячейки (в пределах большой) в которую пишем
+                let row = $(`div[data-row='${BTs[id].dataset.row}']`); // для проверки строки
+                let col = $(`div[data-column='${BTs[id].dataset.column}']`); // для проверки столбца
                 let val = getRandomInt(1, 9);
-                if (!vals.includes(val)) // проверка на повторы в пределах большой ячейки
+                if (!vals.includes(val) && !row.text().includes(val) && !col.text().includes(val)) // проверка на повторы в пределах большой ячейки, текущей строки и столбца
                     if (!BTs[id].dataset.content) { // если нет значения, то ок
                         BTs[id].dataset.content = val;
                         BTs[id].textContent = BTs[id].dataset.content;
@@ -230,11 +232,6 @@ $(document).ready(function () {
                     j--;
                 }
             }
-            // console.log(BTs);
         }
-
-
-        // for
-
     }
 });
