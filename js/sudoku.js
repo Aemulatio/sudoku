@@ -223,6 +223,7 @@ $(document).ready(function () {
                         BTs[id].dataset.content = val;
                         BTs[id].textContent = BTs[id].dataset.content;
                         BTs[id].dataset.unchangeable = '';
+                        BTs[id].classList.add('setted');
                         vals.push(val)
                     } else {
                         j--;
