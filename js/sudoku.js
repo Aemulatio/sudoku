@@ -128,7 +128,9 @@ $(document).ready(function () {
         return true;
     }
 
-
+    /**
+     * Проверяет клетки игрового поля
+     * */
     function checkTile() {
         let bigTiles = {};
 
