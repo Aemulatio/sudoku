@@ -35,7 +35,6 @@ $(document).ready(function () {
      * Проверяет игровое поле
      *
      * */
-
     function check() {
         if (checkTile() && checkRow() && checkColumn() && !$('div.main__small-tile.tile').text().includes('')) {
             alert('Winner winner chicken sudoku');
