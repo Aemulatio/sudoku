@@ -2,21 +2,18 @@
 
 $(document).ready(function () {
     gameStart();
-    // let tiles = document.querySelectorAll('.tile:not(data-unchangeable)'); //получаем игровые клетки
-    // console.log(tiles);
+
     let tiles = $('.tile:not([data-unchangeable])'); //ячейки которым заданы значения незя изменять
-    for (let tile of tiles) {
-        // добавляем каждой ячейке ивент
-        tile.onclick = function () {
-            let innerValue = tile.dataset.content; //читаем текущее значение
-            innerValue++; //добавляем 1
+    tiles.on('click', function () {
+        let innerValue = +$(this).data('content');
+        innerValue++;
 
-            tile.textContent = innerValue; // записываем в ячейку
-            tile.dataset.content = innerValue; // записываем в атрибут
+        $(this).text(innerValue);
+        $(this).data('content', innerValue);
 
-            if (innerValue >= 9) tile.dataset.content = 0;
-        }
-    }
+        if (innerValue >= 9) $(this).data('content', 0)
+    });
+
     $('[data-type="reset"]').on('click', reset);
     $('[data-type="check"]').on('click', check);
 
@@ -25,10 +22,10 @@ $(document).ready(function () {
      *
      */
     function reset() {
-        for (let tile of tiles) {
-            tile.dataset.content = 0;
-            tile.textContent = '';
-        }
+        tiles.each(function () {
+            $(this).data('content', 0);
+            $(this).text('');
+        });
     }
 
     /**
@@ -42,45 +39,59 @@ $(document).ready(function () {
     }
 
     /**
+     * Логика для проверок
+     *
+     * @element - Node
+     * @text - String
+     * */
+    function innerCheck(element, text) {
+
+        let counter = [];
+        for (let i = 0; i < 9; i++) {
+            counter[i] = $(element[i]).data('content');
+        }
+
+        let stat = {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 0
+        }
+
+        for (let j = 0; j < 9; j++) {
+            for (let k = 1; k < 10; k++) {
+                if (counter[j] === k) {
+                    stat[k]++;
+                }
+            }
+        }
+
+        if (!doesItFit(stat)) {
+            alert(text);
+            return false;
+        }
+
+    }
+
+
+    /**
      * Проверяет строки игрового поля
      *
      * */
     function checkRow() {
-        let rows = {};
+        let rows = [];
 
         for (let i = 1; i < 10; i++) {
-            rows[i] = document.querySelectorAll(`div[data-row='${i}']`);
+            rows[i] = $(`div[data-row='${i}']`);
         }
 
         for (let i = 1; i < 10; i++) {
-            let row = [];
-            for (let j = 0; j < 9; j++) {
-                row[j] = rows[i][j].dataset.content;
-            }
-
-            let row_statistic = {
-                1: 0,
-                2: 0,
-                3: 0,
-                4: 0,
-                5: 0,
-                6: 0,
-                7: 0,
-                8: 0,
-                9: 0
-            };
-
-            for (let j = 0; j < 9; j++) {
-                for (let k = 1; k < 10; k++) {
-                    if (row[j] == k) {
-                        row_statistic[k]++;
-                    }
-                }
-            }
-            if (!doesItFit(row_statistic)) {
-                alert('Что-то пошло не так →');
-                return false;
-            }
+            innerCheck(rows[i], 'Что-то пошло не так →');
         }
         return true;
     }
@@ -92,38 +103,11 @@ $(document).ready(function () {
         let columns = {};
 
         for (let i = 1; i < 10; i++) {
-            columns[i] = document.querySelectorAll(`div[data-column='${i}']`);
+            columns[i] = $(`div[data-column='${i}']`);
         }
 
         for (let i = 1; i < 10; i++) {
-            let column = [];
-            for (let j = 0; j < 9; j++) {
-                column[j] = columns[i][j].dataset.content;
-            }
-
-            let column_statistic = {
-                1: 0,
-                2: 0,
-                3: 0,
-                4: 0,
-                5: 0,
-                6: 0,
-                7: 0,
-                8: 0,
-                9: 0
-            };
-
-            for (let j = 0; j < 9; j++) {
-                for (let k = 1; k < 10; k++) {
-                    if (column[j] == k) {
-                        column_statistic[k]++;
-                    }
-                }
-            }
-            if (!doesItFit(column_statistic)) {
-                alert('Что-то пошло не так ↓');
-                return false;
-            }
+            innerCheck(columns[i], 'Что-то пошло не так ↓');
         }
         return true;
     }
@@ -135,39 +119,11 @@ $(document).ready(function () {
         let bigTiles = {};
 
         for (let i = 1; i < 10; i++) {
-            bigTiles[i] = document.querySelectorAll(`div[data-big-tale='${i}']`);
+            bigTiles[i] = $(`div[data-big-tale='${i}']`);
         }
 
         for (let i = 1; i < 10; i++) {
-            let bigTile = [];
-            for (let j = 0; j < 9; j++) {
-                bigTile[j] = bigTiles[i][j].dataset.content;
-            }
-
-            let bigTiles_statistic = {
-                1: 0,
-                2: 0,
-                3: 0,
-                4: 0,
-                5: 0,
-                6: 0,
-                7: 0,
-                8: 0,
-                9: 0
-            };
-
-            for (let j = 0; j < 9; j++) {
-                for (let k = 1; k < 10; k++) {
-                    if (bigTile[j] == k) {
-                        bigTiles_statistic[k]++;
-                    }
-                }
-            }
-            console.log(bigTiles_statistic)
-            if (!doesItFit(bigTiles_statistic)) {
-                alert('Что-то пошло не так ■');
-                return false;
-            }
+            innerCheck(bigTiles[i], 'Что-то пошло не так ■');
         }
         return true;
     }
@@ -184,7 +140,6 @@ $(document).ready(function () {
             }
         }
         return true;
-
     }
 
     /**
@@ -210,7 +165,7 @@ $(document).ready(function () {
         }
 
         for (let i = 1; i < 10; i++) {
-            let BTs = document.querySelectorAll(`div[data-big-tale='${i}']`); //получаем клетки из каждой большой клетки
+            let BTs = $(`div[data-big-tale='${i}']`); //получаем клетки из каждой большой клетки
             let rand = amountPerBT[i - 1]; //записываем в переменную количество заданных ячеек
             let vals = []; //
             for (let j = 0; j < rand; j++) { // поехали их задавать
